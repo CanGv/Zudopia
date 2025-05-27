@@ -3,12 +3,13 @@ const http = require('http');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const { Server } = require('socket.io');
+const Room = require("./models/Room"); 
 require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: 'http://localhost:3000', methods: ['GET', 'POST'] }
+  cors: { origin: 'https://zudopia.vercel.app/', methods: ['GET', 'POST'] }
 });
 
 app.use(cors());
@@ -18,19 +19,19 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error(err));
 
-io.on('connection', (socket) => {
-  console.log('A user connected: ' + socket.id);
+io.on("connection", (socket) => {
+  console.log("New socket connected:", socket.id);
 
-  socket.on('joinRoom', (roomId) => {
+  socket.on("createRoom", async (_, callback) => {
+    const roomId = Math.random().toString(36).substring(2, 8).toUpperCase(); // örn: 6 karakterlik ID
+    await Room.create({ roomId });
     socket.join(roomId);
+    callback({ success: true, roomId });
   });
 
-  socket.on('chatMessage', ({ roomId, message }) => {
-    io.to(roomId).emit('receiveMessage', message);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+  socket.on("joinRoom", ({ roomId }) => {
+    socket.join(roomId);
+    socket.to(roomId).emit("userJoined", { userId: socket.id });
   });
 });
 

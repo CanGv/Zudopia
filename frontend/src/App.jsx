@@ -1,34 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+// frontend/src/App.jsx
 
-const socket = io('http://localhost:5000');
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import RoomPage from "./pages/RoomPage";
 
 function App() {
-  const [message, setMessage] = useState('');
-  const [chat, setChat] = useState([]);
-
-  useEffect(() => {
-    socket.emit('joinRoom', 'defaultRoom');
-
-    socket.on('receiveMessage', (msg) => {
-      setChat((prev) => [...prev, msg]);
-    });
-  }, []);
-
-  const sendMessage = () => {
-    socket.emit('chatMessage', { roomId: 'defaultRoom', message });
-    setMessage('');
-  };
-
   return (
-    <div>
-      <h1>Zudopia Chat</h1>
-      <div>
-        {chat.map((msg, index) => <p key={index}>{msg}</p>)}
-        <input value={message} onChange={(e) => setMessage(e.target.value)} />
-        <button onClick={sendMessage}>Send</button>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/room/:roomId" element={<RoomPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
