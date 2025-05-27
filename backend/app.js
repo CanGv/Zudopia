@@ -7,9 +7,13 @@ const Room = require("./models/Room");
 require('dotenv').config();
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: 'https://zudopia.vercel.app/', methods: ['GET', 'POST'] }
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'https://zudopia.vercel.app',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
 });
 
 app.use(cors());

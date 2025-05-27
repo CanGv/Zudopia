@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io("https://zudopia.onrender.com/"); // örn: http://localhost:5000
+const socket = io("https://zudopia.onrender.com", {
+  withCredentials: true,
+  transports: ["websocket"] // polling yerine websocket önerilir
+});
 
 export default function HomePage() {
   const [roomCode, setRoomCode] = useState("");
