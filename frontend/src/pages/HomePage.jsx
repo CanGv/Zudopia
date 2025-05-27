@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io(process.env.REACT_APP_BACKEND_URL); // örn: http://localhost:5000
+const socket = io("https://zudopia.onrender.com/"); // örn: http://localhost:5000
 
 export default function HomePage() {
   const [roomCode, setRoomCode] = useState("");
